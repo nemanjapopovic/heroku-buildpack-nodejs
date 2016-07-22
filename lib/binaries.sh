@@ -28,6 +28,22 @@ install_nodejs() {
   chmod +x $dir/bin/*
 }
 
+install_git() {
+  local version="$1"
+  local dir="$2"
+
+  echo "Downloading and installing git $version..."
+  local download_url="https://github.com/git/git/archive/v$version.tar.gz"
+  local code=$(curl "$download_url" --silent --fail --retry 5 --retry-max-time 15 -o /tmp/git.tar.gz --write-out "%{http_code}")
+  if [ "$code" != "200" ]; then
+    echo "Unable to download git $version; does it exist?" && false
+  fi
+  tar xzf /tmp/git.tar.gz -C /tmp
+  rm -rf $dir/*
+  mv /tmp/git-v$version-$os-$cpu/* $dir
+  chmod +x $dir/bin/*
+}
+
 install_iojs() {
   local version="$1"
   local dir="$2"
